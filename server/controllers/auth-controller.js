@@ -1,4 +1,6 @@
 const User=require("../models/user-model");
+const bcrypt=require("bcryptjs");
+
 
 
 const home =async(req,res)=>{
@@ -18,8 +20,22 @@ const register=async(req,res)=>{
         if(userExist){
             return res.status(400).json({msg:"eamil already exist"});
         }
-        const userCreated=await User.create({username,email,phone,password});
-        res.status(200).json({msg:userCreated});
+        //    hash the password
+        // const saltRound=10;
+        // const hash_password=await bcrypt.hash(password,saltRound);
+
+    
+        const userCreated=await User.create({
+            username,
+            email,
+            phone,
+            password});
+        res.status(201).json({
+            msg:"Registration Sucessful",
+            token:await userCreated.generateToken(),
+            userId:userCreated._id.toString(),
+
+        });
 
     }catch(error){
         res.status(500).json(error.message);
