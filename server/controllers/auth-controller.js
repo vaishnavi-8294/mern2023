@@ -40,5 +40,33 @@ const register=async(req,res)=>{
     }catch(error){
         res.status(500).json(error.message);
     }
-}
-module.exports={home,register};
+};
+
+    // User login logic
+    const login =async (req,res)=>{
+        try{
+            const {email,password}=req.body;
+            const userExist = await User.findOne({email});
+            console.log(userExist);
+            if(!userExist){
+                return res.status(400).json({message:"Invalid Credentials"});
+            }
+            // const user =await bcrypt.compare(password ,userExist.password);
+            const user= await userExist.comparePassword(password);
+            if(user){
+                res.status(200).json({
+                    msg:"Login  Sucessful",
+                    token:await userExist.generateToken(),
+                    userId:userExist._id.toString(),
+        
+                });
+            }else{
+                res.status(401).json({message:"Invalid email or password"});
+            }
+            
+
+        }catch(error){
+            res.status(500).json(error.message);
+        }
+    }
+module.exports={home , register , login};

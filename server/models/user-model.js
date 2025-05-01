@@ -35,13 +35,14 @@ const userSchema=new mongoose.Schema({
         const saltRound=await bcrypt.genSalt(10);
         const hash_password=await bcrypt.hash(user.password,saltRound);
         user.password=hash_password;
-        
-
     }catch(err){
         next(err);
     }
-
  });
+//  compare the password
+userSchema.methods.comparePassword= async function(password){
+    return  bcrypt.compare(password ,this.password);
+}
  //json web Token
  userSchema.methods.generateToken= async function(){
     try{
