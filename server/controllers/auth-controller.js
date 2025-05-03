@@ -38,7 +38,8 @@ const register=async(req,res)=>{
         });
 
     }catch(error){
-        res.status(500).json(error.message);
+        // res.status(500).json(error.message);
+        next(error);
     }
 };
 
@@ -50,6 +51,7 @@ const register=async(req,res)=>{
             console.log(userExist);
             if(!userExist){
                 return res.status(400).json({message:"Invalid Credentials"});
+                
             }
             // const user =await bcrypt.compare(password ,userExist.password);
             const user= await userExist.comparePassword(password);
@@ -62,11 +64,16 @@ const register=async(req,res)=>{
                 });
             }else{
                 res.status(401).json({message:"Invalid email or password"});
+                
             }
             
 
         }catch(error){
             res.status(500).json(error.message);
+           
+           
+           
         }
     }
+    
 module.exports={home , register , login};
